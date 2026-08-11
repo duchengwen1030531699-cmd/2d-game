@@ -18,7 +18,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.1, 0.13, 0.18, 1)
+color = Color(0.16, 0.11, 0.08, 1)
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 1
@@ -36,13 +36,13 @@ theme_override_constants/separation = 18
 [node name="Title" type="Label" parent="CenterContainer/VBox"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 64
-text = "2D 冒险"
+text = "晨光街"
 horizontal_alignment = 1
 
 [node name="Subtitle" type="Label" parent="CenterContainer/VBox"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "横板 2D 手游 · Godot 4.7"
+text = "温馨早餐店 · M1 经营原型"
 horizontal_alignment = 1
 
 [node name="Spacer" type="Control" parent="CenterContainer/VBox"]
@@ -53,13 +53,13 @@ layout_mode = 2
 custom_minimum_size = Vector2(360, 64)
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
-text = "开始游戏"
+text = "进入早餐店"
 
 [node name="SettingsButton" type="Button" parent="CenterContainer/VBox"]
 custom_minimum_size = Vector2(360, 64)
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
-text = "设置（开发中）"
+text = "重新开始（开发中）"
 
 [node name="QuitButton" type="Button" parent="CenterContainer/VBox"]
 custom_minimum_size = Vector2(360, 64)
@@ -80,7 +80,7 @@ offset_right = -16.0
 offset_bottom = -12.0
 grow_horizontal = 0
 grow_vertical = 0
-text = "v0.1.0 · M0 骨架"
+text = "v0.2.0 · M1 原型"
 horizontal_alignment = 2
 
 [connection signal="pressed" from="CenterContainer/VBox/StartButton" to="." method="_on_start_button_pressed"]
