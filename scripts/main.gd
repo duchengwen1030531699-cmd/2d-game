@@ -21,6 +21,7 @@ var _drawer_scroll: ScrollContainer
 var _page_body: VBoxContainer
 var _toast: Label
 var _toast_timer: Timer
+var _settings_button: Button
 
 
 func _ready() -> void:
@@ -58,6 +59,14 @@ func _build_interface() -> void:
 	_finished_label = _resource_label("成品 0 / 8")
 	for resource_label in [_coins_label, _reputation_label, _materials_label, _finished_label]:
 		header_content.add_child(resource_label)
+	var settings_button := Button.new()
+	settings_button.text = "设置"
+	settings_button.custom_minimum_size = Vector2(64, 30)
+	settings_button.add_theme_font_size_override("font_size", 13)
+	settings_button.add_theme_color_override("font_color", Color.WHITE)
+	settings_button.add_theme_stylebox_override("normal", _stylebox(Color("ffffff33"), 6))
+	settings_button.pressed.connect(func() -> void: get_tree().change_scene_to_file("res://scenes/settings/settings.tscn"))
+	header_content.add_child(settings_button)
 	layout.add_child(header)
 
 	var task_panel := _panel(Color("fff1c8"), 40)

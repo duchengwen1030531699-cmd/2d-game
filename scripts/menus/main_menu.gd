@@ -8,7 +8,7 @@ func _on_start_button_pressed() -> void:
 
 
 func _on_settings_button_pressed() -> void:
-	print("重新开始功能将在 M1 存档界面中提供")
+	get_tree().change_scene_to_file("res://scenes/settings/settings.tscn")
 
 
 func _on_quit_button_pressed() -> void:
