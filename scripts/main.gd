@@ -8,7 +8,6 @@ const COLOR_PANEL := Color("fffdf8")
 const COLOR_LINE := Color("e6d5c4")
 
 var _active_page := "none"
-var _purchase_quantities := {"flour": 0, "egg": 0, "scallion": 0}
 var _nav_buttons: Dictionary = {}
 var _coins_label: Label
 var _reputation_label: Label
@@ -196,32 +195,28 @@ func _rebuild_active_page() -> void:
 
 
 func _build_purchase_page() -> void:
-	_page_body.add_child(_page_heading("供应商采购", "单份购买 · 支持批量数量"))
+	_page_body.add_child(_page_heading("供应商采购", "一键补满原料库存"))
+	var state := GameManager.get_state()
 	for item_id in Catalog.INGREDIENTS:
 		var row := HBoxContainer.new()
 		row.add_theme_constant_override("separation", 10)
 		var info := _label("%s\n%d 金币 / 份" % [Catalog.INGREDIENTS[item_id]["name"], Catalog.INGREDIENTS[item_id]["price"]], 15, COLOR_BROWN)
 		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.add_child(info)
-		var spin := SpinBox.new()
-		spin.min_value = 0
-		spin.max_value = 99
-		spin.step = 1
-		spin.value = _purchase_quantities[item_id]
-		spin.custom_minimum_size = Vector2(110, 0)
-		spin.value_changed.connect(_set_purchase_quantity.bind(item_id))
-		row.add_child(spin)
+		var current := int(state["stock"].get(item_id, 0))
+		var stock_label := _label("库存 %d" % current, 14, COLOR_MUTED)
+		stock_label.name = "StockLabel"
+		row.add_child(stock_label)
 		_page_body.add_child(_card(row))
 	var summary := _label("", 15, COLOR_MUTED)
 	summary.name = "PurchaseSummary"
 	_page_body.add_child(_card(summary))
-	var confirm := _action_button("确认采购")
-	confirm.pressed.connect(func() -> void:
-		if GameManager.purchase(_purchase_quantities):
-			_purchase_quantities = {"flour": 0, "egg": 0, "scallion": 0}
+	var batch := _action_button("补满采购")
+	batch.pressed.connect(func() -> void:
+		if GameManager.purchase_batch():
 			_rebuild_active_page()
 	)
-	_page_body.add_child(confirm)
+	_page_body.add_child(batch)
 	_refresh_purchase_summary()
 
 
@@ -231,17 +226,9 @@ func _refresh_purchase_summary() -> void:
 	var summary := _page_body.find_child("PurchaseSummary", true, false) as Label
 	if summary == null:
 		return
-	var quantity := 0
-	var total := 0
-	for item_id in _purchase_quantities:
-		quantity += int(_purchase_quantities[item_id])
-		total += int(_purchase_quantities[item_id]) * int(Catalog.INGREDIENTS[item_id]["price"])
-	summary.text = "已选 %d 份 · 合计 %d 金币" % [quantity, total]
-
-
-func _set_purchase_quantity(value: float, item_id: String) -> void:
-	_purchase_quantities[item_id] = int(value)
-	_refresh_purchase_summary()
+	var state := GameManager.get_state()
+	var space := Catalog.material_capacity(state) - _material_count(state)
+	summary.text = "当前剩余容量 %d" % max(0, space)
 
 
 func _build_craft_page() -> void:

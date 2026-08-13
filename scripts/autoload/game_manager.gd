@@ -51,6 +51,8 @@ func get_state() -> Dictionary:
 
 
 func purchase(items: Dictionary) -> bool:
+	if items.is_empty():
+		return _fail("请先选择需要采购的原料")
 	var total_cost := 0
 	var total_quantity := 0
 	for item_id in items:
@@ -70,6 +72,33 @@ func purchase(items: Dictionary) -> bool:
 	_state["coins"] -= total_cost
 	_commit("采购完成，原料已进入库存")
 	return true
+
+
+func purchase_batch() -> bool:
+	var to_buy := {}
+	var total_cost := 0
+	for item_id in Catalog.INGREDIENTS:
+		var current := int(_state["stock"].get(item_id, 0))
+		var capacity := Catalog.material_capacity(_state)
+		var space := capacity - _material_count()
+		if space <= 0:
+			continue
+		var batch := min(Catalog.PURCHASE_BATCH, space)
+		var price := int(Catalog.INGREDIENTS[item_id]["price"])
+		var cost := price * batch
+		if cost > int(_state["coins"]):
+			var affordable := int(_state["coins"]) / price
+			if affordable <= 0:
+				continue
+			batch = affordable
+			cost = price * batch
+		if batch <= 0:
+			continue
+		to_buy[item_id] = batch
+		total_cost += cost
+	if to_buy.is_empty():
+		return _fail("金币不足或库存已满")
+	return purchase(to_buy)
 
 
 func enqueue_recipe(recipe_id: String) -> bool:

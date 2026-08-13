@@ -5,6 +5,7 @@ const CUSTOMER_INTERVAL := 8.0
 const ORDER_UNLOCK_SALES := 3
 const ORDER_DURATION := 120.0
 const ORDER_REFRESH_DELAY := 90.0
+const PURCHASE_BATCH := 10
 
 const INGREDIENTS := {
 	"flour": {"name": "面粉", "price": 3},
